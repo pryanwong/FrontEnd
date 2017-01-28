@@ -5,7 +5,7 @@ declare var $:any;
 
 @Component({
   selector: 'home',
-  styleUrls:  ['css/magnific-popup.css'],
+  styleUrls:  ['css/magnific-popup.css','css/mystyles.css','css/homepage.css'],
   providers: [ NgsRevealModule ],
   template: `
   <header id='home' [style.height.px]="innerHeight" (window:resize)="onResize($event)">
@@ -25,8 +25,8 @@ declare var $:any;
           <div class='col-lg-8 col-lg-offset-2 text-center'>
             <h2 class='section-heading'>Draw and Price</h2>
             <hr class='light'>
-            <p class='text-faded'>Cloud based software converts sales drawings directly to quotations</p>
-            <p class='text-faded'>Capture and Share Requirements, Instantly Generate Quote, Grow Deal Sizes</p>
+            <p class='text-faded' style="font-weight:600">Cloud based software converts sales drawings directly to quotations</p>
+            <p class='text-faded' style="font-weight:600">Capture and Share Requirements, Instantly Generate Quote, Grow Deal Sizes</p>
             <a class='page-scroll btn btn-default btn-xl sr-button' href='#login'>Get Started!</a>
          </div>
       </div>
@@ -225,10 +225,10 @@ declare var $:any;
           </form>
 
      <hr class='light'>
-     <a class="btn btn-block btn-social btn-linkedin" href="/users/auth/linkedin" id="sign_in" style="border-radius:0px"><span class='fa fa-linkedin'></span>
+     <a class="btn btn-block btn-social btn-linkedin" href="/users/auth/linkedin" id="sign_in" style="border-radius:5px"><span class='fa fa-linkedin'></span>
        Sign in with LinkedIn
      </a>
-     <a class="btn btn-block btn-social btn-google" href="/users/auth/google_oauth2" id="sign_in" style="border-radius:0px"><span class='fa fa-google-plus' id='googlebutton'></span>
+     <a class="btn btn-block btn-social btn-google" href="/users/auth/google_oauth2" id="sign_in" style="border-radius:5px"><span class='fa fa-google-plus' id='googlebutton' style="padding-left:4px;"></span>
        Sign in with Google
     </a>
   </div>

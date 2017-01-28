@@ -10,12 +10,12 @@ import { NavBarLoggedInComponent} from './navbar_login.component'
 
 export const routes: Routes = [
  { path: '', redirectTo: 'home', pathMatch: 'full' },
- { path: 'home', children:[
+ { path: 'loggedin', children:[
      { path: '', component: NavBarNoLoginComponent, outlet: 'navbar'},
      { path: '' , component: HeaderComponent, outlet: 'header'},
      { path: '' , component: FooterComponent, outlet: 'footer'}
   ]},
- { path: 'loggedin', children:[
+ { path: 'home', children:[
      { path: '', component: NavBarLoggedInComponent, outlet: 'navbar'},
      { path: '', component: HomeComponent}
   ]},
