@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { WindowRef } from './WindowRef';
-import {NgsRevealModule} from 'ng2-scrollreveal';
+import { NgsRevealModule} from 'ng2-scrollreveal';
+import { HomeService } from './home.service';
+import {Portfolio, PortfolioSec, PORTFOLIOS, PORTFOLIOSECS} from './mock-homefiles';
+import { Angular2TokenService , A2tUiModule } from 'angular2-token';
 declare var $:any;
 
 @Component({
   selector: 'home',
-  styleUrls:  ['css/magnific-popup.css','css/mystyles.css','css/homepage.css'],
-  providers: [ NgsRevealModule ],
+  styleUrls:  ['css/mystyles.css','css/homepage.css'],
+  providers: [ NgsRevealModule, HomeService ],
   template: `
   <header id='home' [style.height.px]="innerHeight" (window:resize)="onResize($event)">
     <div class='header-content'>
@@ -77,98 +80,23 @@ declare var $:any;
    <section class='no-padding' id='portfolio'>
        <div class='container-fluid'>
          <div class='row no-gutter popup-gallery'>
-           <div class='col-lg-4 col-sm-6'>
-             <a class="portfolio-box" href="/images/fullsize/software-sized.jpg">
-               <img alt="Software" class="img-responsive" src="/images/thumbnails/software-sized.jpg" />
+           <div class='col-lg-4 col-sm-6' *ngFor="let portfolio of portfolios; let l = last">
+             <a class="portfolio-box" href="{{portfolio.large_img}}">
+               <img alt="Software" class="img-responsive" src="{{portfolio.thumbnail_img}}" />
                <div class='portfolio-box-caption'>
                  <div class='portfolio-box-caption-content'>
                    <div class='project-category text-faded'>
-                     Draw & Quote
+                     {{portfolio.product_cat}}
                    </div>
                    <div class='project-name'>
-                     IT Sales
+                     {{portfolio.project}}
                    </div>
                 </div>
               </div>
            </a>
         </div>
-        <div class='col-lg-4 col-sm-6'>
-          <a class="portfolio-box" href="/images/fullsize/dirty-industry-stack-factory-sized.jpg">
-              <img alt="Dirty industry stack factory" class="img-responsive" src="/images/thumbnails/dirty-industry-stack-factory-sized.jpg" />
-                <div class='portfolio-box-caption'>
-                  <div class='portfolio-box-caption-content'>
-                    <div class='project-category text-faded'>
-                      Draw & Quote
-                    </div>
-                    <div class='project-name'>
-                      Industrial Sales
-                    </div>
-                  </div>
-               </div>
-         </a>
-      </div>
-      <div class='col-lg-4 col-sm-6'>
-        <a class="portfolio-box" href="/images/fullsize/it_switch_sized.jpg">
-            <img alt="It switch" class="img-responsive" src="/images/thumbnails/it_switch_sized.jpg" />
-            <div class='portfolio-box-caption'>
-              <div class='portfolio-box-caption-content'>
-                <div class='project-category text-faded'>
-                  Draw & Quote
-                </div>
-                <div class='project-name'>
-                  Network Equipment Sales
-                </div>
-             </div>
-           </div>
-        </a>
      </div>
-    <div class='col-lg-4 col-sm-6'>
-       <a class="portfolio-box" href="/images/fullsize/diagram_sample.PNG">
-          <img alt="Diagram sample" class="img-responsive" src="/images/thumbnails/diagram_sample_sized.png" />
-          <div class='portfolio-box-caption'>
-             <div class='portfolio-box-caption-content'>
-               <div class='project-category text-faded'>
-                  IT/Industrial Application
-               </div>
-             <div class='project-name'>
-               Draw the Solution
-             </div>
-          </div>
-        </div>
-      </a>
-  </div>
-  <div class='col-lg-4 col-sm-6'>
-    <a class="portfolio-box" href="/images/fullsize/prod_config_size.png">
-       <img alt="Prod config" class="img-responsive" src="/images/thumbnails/prod_config_size.png" />
-          <div class='portfolio-box-caption'>
-             <div class='portfolio-box-caption-content'>
-                <div class='project-category text-faded'>
-                   Configure Products In Drawing
-                </div>
-             <div class='project-name'>
-               Configuration
-             </div>
-          </div>
-       </div>
-    </a>
-  </div>
-  <div class='col-lg-4 col-sm-6'>
-  <a class="portfolio-box" href="/images/fullsize/BOM.PNG">
-      <img alt="Bom" class="img-responsive" src="/images/thumbnails/BOM_sized.png" />
-      <div class='portfolio-box-caption'>
-         <div class='portfolio-box-caption-content'>
-            <div class='project-category text-faded'>
-              Rapidly Generate Bill of Materials
-            </div>
-            <div class='project-name'>
-             Quotation
-            </div>
-        </div>
-     </div>
-   </a>
    </div>
-</div>
-</div>
 </section>
 <section id='blog'>
    <aside class='bg-dark'>
@@ -231,6 +159,9 @@ declare var $:any;
      <a class="btn btn-block btn-social btn-google" href="/users/auth/google_oauth2" id="sign_in" style="border-radius:5px"><span class='fa fa-google-plus' id='googlebutton' style="padding-left:4px;"></span>
        Sign in with Google
     </a>
+    <a class="btn btn-block btn-social btn-google" (click)="gitHubOAuth()" id="sign_in" style="border-radius:5px"><span class='fa fa-google-plus' id='googlebutton' style="padding-left:4px;"></span>
+      Sign in with Test
+   </a>
   </div>
 </div>
 </div>
@@ -239,13 +170,26 @@ declare var $:any;
   `
 })
 
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit   {
 
   public innerHeight : Number;
-  constructor(private winRef: WindowRef){
+  public portfolios : Portfolio[];
+  constructor(private winRef: WindowRef, private homeService: HomeService, private _tokenService: Angular2TokenService){
          console.log('Window object', winRef.nativeWindow);
          this.innerHeight = winRef.nativeWindow.innerHeight;
          console.log("Height:", this.innerHeight)
+         this.portfolios = homeService.getPortfolios();
+
+  }
+
+  public gitHubOAuth() {
+    console.log("Clicked gitHubOAuth")
+    this._tokenService.signInOAuth(
+       'github'
+    ).subscribe(
+       res =>      console.log(res),
+       error =>    console.log(error)
+    );
   }
 
   onResize(event: any) {
@@ -277,7 +221,6 @@ export class HomeComponent implements OnInit {
         }, 1250, 'easeInOutExpo');
         event.preventDefault();
     });
-
     // Highlight the top nav as scrolling occurs
     $('body').scrollspy({
         target: '.navbar-fixed-top',
@@ -295,23 +238,23 @@ export class HomeComponent implements OnInit {
             top: 100
         }
     })
-
-
-    // Initialize and Configure Magnific Popup Lightbox Plugin
-    $('.popup-gallery').magnificPopup({
-        delegate: 'a',
-        type: 'image',
-        tLoading: 'Loading image #%curr%...',
-        mainClass: 'mfp-img-mobile',
-        gallery: {
-            enabled: true,
-            navigateByImgClick: true,
-            preload: [0, 1] // Will preload 0 - before current, and 1 after the current image
-        },
-        image: {
-            tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
-        }
-    });
-
+  }
+  ngAfterViewInit() {
+       //Copy in all the js code from the script.js. Typescript will complain but it works just fine
+       // Initialize and Configure Magnific Popup Lightbox Plugin
+       $('.popup-gallery')['magnificPopup']({
+         delegate: 'a',
+         type: 'image',
+         tLoading: 'Loading image #%curr%...',
+         mainClass: 'mfp-img-mobile',
+         gallery: {
+             enabled: true,
+             navigateByImgClick: true,
+             preload: [0, 1] // Will preload 0 - before current, and 1 after the current image
+         },
+         image: {
+             tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
+         }
+        });
   }
 }

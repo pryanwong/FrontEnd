@@ -31,6 +31,7 @@
       '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
       'scrollreveal': 'node_modules/scrollreveal/dist/scrollreveal.min.js',
       'ng2-scrollreveal': 'node_modules/ng2-scrollreveal/bundles/ng2-scrollreveal.min.js',
+      'angular2-token' :'npm:angular2-token/lib/angular2-token.service.js',
 
       // other libraries
       'rxjs':                      'npm:rxjs',

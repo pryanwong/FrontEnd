@@ -22,7 +22,7 @@ export const routes: Routes = [
  { path: 'about', component: FooterComponent },
  { path: 'contact', component: HeaderComponent },
  { path: 'contactus', redirectTo: 'contact' },
- { path: '**', redirectTo: 'home'}
+ // { path: '**', redirectTo: 'home'}
 ];
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(routes);
